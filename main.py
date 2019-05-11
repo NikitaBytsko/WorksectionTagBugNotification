@@ -18,11 +18,13 @@ def get_current_time(FMT):
 
 def string_to_md5_hash():
     string = WORKSECTION_ACTION_NAME + WORKSECTION_API_KEY
+
     return hashlib.md5(string.encode('utf-8')).hexdigest()
 
 
 def get_worksection_api_url():
     worksection_api_hash = string_to_md5_hash()
+
     return WORKSECTION_COMPANY_URL + "/api/admin/?action=get_all_tasks&show_subtasks=1&hash=" + worksection_api_hash
 
 
@@ -47,7 +49,7 @@ def check_task(task):
             last_time = datetime.datetime.strptime(current_time, FMT)
 
             value = last_time - first_time
-            if value.total_seconds() / 60 < 1:
+            if value.total_seconds() / 80 < 1:
                 subprocess.call(["afplay", "audio.wav"])
                 return True
     return False
@@ -63,8 +65,8 @@ while True:
         if check_task(task):
             break
         if 'child' in task:
-            child = task['child']
-            for child_task in child:
+            child_tasks = task['child']
+            for child_task in child_tasks:
                 if check_task(child_task):
                     break
 
